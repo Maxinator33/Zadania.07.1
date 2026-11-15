@@ -20,8 +20,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.appcompat.app.AlertDialog;
 
 import com.google.android.material.materialswitch.MaterialSwitch;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -82,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         btnBirthDate.setOnClickListener(v -> showDatePicker());
         btnSubmit.setOnClickListener(v -> {
             if (validateForm()) {
-                submitForm();
+                askForConfirmation();
             }
         });
 
@@ -164,8 +166,21 @@ public class MainActivity extends AppCompatActivity {
 
         return true;
     }
+    private void askForConfirmation() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.confirm_title)
+                .setMessage(R.string.confirm_message)
+                .setPositiveButton(R.string.yes, (dialog, which) -> submitForm())
+                .setNegativeButton(R.string.no, null)     // null = zamknij i nic nie rób
+                .show();
+    }
+
     private void submitForm() {
         tvSummary.setText(buildSummary());
+
+        Snackbar.make(findViewById(R.id.main), R.string.sent, Snackbar.LENGTH_LONG)
+                .setAction(R.string.undo, v -> tvSummary.setText(""))
+                .show();
     }
 
     private String buildSummary() {
