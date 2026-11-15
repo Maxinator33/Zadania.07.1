@@ -16,4 +16,12 @@
     <string name="newsletter">Chcę dostawać newsletter</string>
     <string name="terms">Akceptuję regulamin</string>
     <string name="btn_submit">WYŚLIJ ZGŁOSZENIE</string>
+
+    <string-array name="courses">
+        <item>-- wybierz kurs --</item>
+        <item>Programowanie w Javie</item>
+        <item>Aplikacje mobilne</item>
+        <item>Bazy danych</item>
+        <item>Sieci komputerowe</item>
+    </string-array>
 </resources>
