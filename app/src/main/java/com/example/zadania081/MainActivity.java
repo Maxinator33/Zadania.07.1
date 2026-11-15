@@ -12,6 +12,8 @@ import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.util.Patterns;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -78,7 +80,11 @@ public class MainActivity extends AppCompatActivity {
                 btnSubmit.setEnabled(isChecked));
 
         btnBirthDate.setOnClickListener(v -> showDatePicker());
-        btnSubmit.setOnClickListener(v -> submitForm());
+        btnSubmit.setOnClickListener(v -> {
+            if (validateForm()) {
+                submitForm();
+            }
+        });
 
         // SeekBarChangeListener ma 3 metody, więc lambda nie wystarczy
         sbLevel.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -125,7 +131,39 @@ public class MainActivity extends AppCompatActivity {
         dialog.getDatePicker().setMaxDate(System.currentTimeMillis());   // bez przyszłości
         dialog.show();
     }
+    // wzorzec: pierwszy błąd = wskaż pole, przerwij, wyjdź
+    private boolean validateForm() {
+        String name = etName.getText().toString().trim();
+        if (name.isEmpty()) {
+            etName.setError(getString(R.string.error_name));
+            etName.requestFocus();
+            return false;
+        }
 
+        String email = etEmail.getText().toString().trim();
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            etEmail.setError(getString(R.string.error_email));
+            etEmail.requestFocus();
+            return false;
+        }
+
+        if (birthDate.isEmpty()) {
+            Toast.makeText(this, R.string.error_date, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (spCourse.getSelectedItemPosition() == 0) {        // 0 = brak wyboru
+            Toast.makeText(this, R.string.error_course, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (rgMode.getCheckedRadioButtonId() == -1) {         // -1 = nic nie zaznaczono
+            Toast.makeText(this, R.string.error_mode, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
+    }
     private void submitForm() {
         tvSummary.setText(buildSummary());
     }
